@@ -270,6 +270,10 @@ steps:
       - npm test
 ```
 
+## JSON Schema
+
+A JSON Schema for `.vela.yml` is published with every Vela server release and available at https://github.com/go-vela/server/releases/latest/download/schema.json. It is also listed in [SchemaStore](https://www.schemastore.org), so editors with SchemaStore support validate `.vela.yml` files automatically.
+
 ## Pitfalls
 
 - Vela pipelines support two execution models -- `steps` (sequential) and `stages` (parallel) -- but they are mutually exclusive at the compiler level. Including both causes a compile error because the compiler cannot determine which execution model to use.

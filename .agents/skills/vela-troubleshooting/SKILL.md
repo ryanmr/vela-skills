@@ -144,6 +144,8 @@ Common YAML issues:
 - Missing quotes around special characters
 - Invalid YAML merge key (`<<`) usage (see YAML Anchor Issues below)
 
+You can also validate your pipeline against the official JSON Schema at https://github.com/go-vela/server/releases/latest/download/schema.json.
+
 ### Invalid Secret Path
 
 **Symptom**: Build errors with "invalid secret path".
