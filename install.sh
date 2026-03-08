@@ -58,8 +58,8 @@ detect_agents() {
     AGENT_DIRS+=("$home/.codex/skills")
   fi
 
-  # GitHub Copilot: `gh copilot` extension or ~/.config/github-copilot/
-  if gh copilot --version >/dev/null 2>&1 || [[ -d "$home/.config/github-copilot" ]]; then
+  # GitHub Copilot: `copilot` CLI, `gh copilot` extension, or ~/.config/github-copilot/
+  if has_cmd copilot || gh copilot --version >/dev/null 2>&1 || [[ -d "$home/.config/github-copilot" ]]; then
     AGENT_NAMES+=("github-copilot")
     AGENT_DIRS+=("$home/.config/github-copilot/skills")
   fi
