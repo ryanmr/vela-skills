@@ -51,7 +51,7 @@ The script detects which AI tools you have installed and copies all 12 skills to
 | **Cross-client** | Always | `~/.agents/skills/vela-*/` |
 | **Claude Code** | `claude` CLI or `~/.claude/` | `~/.claude/skills/vela-*/` |
 | **OpenAI Codex** | `codex` CLI or `~/.codex/` | `~/.codex/skills/vela-*/` |
-| **GitHub Copilot** | `gh copilot` or `~/.config/github-copilot/` | `~/.config/github-copilot/skills/vela-*/` |
+| **GitHub Copilot** | `copilot` CLI, `gh copilot`, or `~/.copilot/` | `~/.copilot/skills/vela-*/` |
 
 The script is idempotent -- re-running it skips skills that are already up to date.
 
