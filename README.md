@@ -93,6 +93,29 @@ description: See ../../.agents/skills/vela-secrets/SKILL.md
 Read the full skill at [../../.agents/skills/vela-secrets/SKILL.md](../../.agents/skills/vela-secrets/SKILL.md).
 ```
 
+## References
+
+Documentation and specifications used to build these skills and the installer:
+
+### Agent Skills
+
+- [Agent Skills specification](https://agentskills.io/specification) -- SKILL.md format, YAML frontmatter, progressive disclosure
+- [Adding skills support (client implementation)](https://agentskills.io/client-implementation/adding-skills-support) -- cross-client `.agents/skills/` convention
+- [Vercel skills CLI](https://github.com/vercel-labs/skills) -- `npx skills` installer with 40+ tool auto-detection
+
+### Claude Code
+
+- [Claude Code skills overview](https://docs.anthropic.com/en/docs/claude-code/skills) -- user-level `~/.claude/skills/`, project-level `.claude/skills/`
+
+### OpenAI Codex
+
+- [Codex agents and skills](https://openai.com/index/codex/) -- user-level `~/.codex/skills/`, project-level `.agents/skills/`
+
+### GitHub Copilot
+
+- [About agent skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills) -- user-level `~/.copilot/skills/`, project-level `.github/skills/`
+- [Configure Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/configure-copilot-cli) -- `~/.copilot/` config directory
+
 ## Development
 
 See [README_WORKSPACE.md](README_WORKSPACE.md) for the research workspace layout and sibling repository setup.
