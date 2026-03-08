@@ -1,0 +1,1372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/go-vela/server/compiler/types/yaml/yaml/build",
+  "$defs": {
+    "CancelOptions": {
+      "properties": {
+        "running": {
+          "type": "boolean",
+          "description": "Enables auto canceling of running pipelines that become stale due to new push.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-auto-cancel-key"
+        },
+        "pending": {
+          "type": "boolean",
+          "description": "Enables auto canceling of queued pipelines that become stale due to new push.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-auto-cancel-key"
+        },
+        "default_branch": {
+          "type": "boolean",
+          "description": "Enables auto canceling of queued or running pipelines that become stale due to new push to default branch.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-auto-cancel-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Deployment": {
+      "properties": {
+        "targets": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "List of deployment targets for the deployment block.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-targets-key"
+        },
+        "parameters": {
+          "$ref": "#/$defs/ParameterMap",
+          "description": "List of parameters for the deployment block.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        },
+        "template": {
+          "$ref": "#/$defs/StepTemplate",
+          "description": "Name of template to expand in the deployment block.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-template-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Git": {
+      "properties": {
+        "token": {
+          "$ref": "#/$defs/Token",
+          "description": "Provide the git token specifications"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Metadata": {
+      "properties": {
+        "template": {
+          "type": "boolean",
+          "description": "Enables compiling the pipeline as a template.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-template-key"
+        },
+        "render_inline": {
+          "type": "boolean",
+          "description": "Enables inline compiling for the pipeline templates.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-render-inline-key"
+        },
+        "clone": {
+          "type": "boolean",
+          "description": "Enables injecting the default clone process.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-clone-key",
+          "default": true
+        },
+        "environment": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Controls which containers processes can have global env injected.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-environment-key"
+        },
+        "auto_cancel": {
+          "$ref": "#/$defs/CancelOptions",
+          "description": "Enables auto canceling of queued or running pipelines that become stale due to new push.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/#the-auto-cancel-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Origin": {
+      "properties": {
+        "environment": {
+          "$ref": "#/$defs/StringSliceMap",
+          "description": "Variables to inject into the container environment.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-environment-key"
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Docker image to use to create the ephemeral container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-image-key"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique name for the secret origin.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-name-key"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Extra configuration variables for the secret plugin.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-parameters-key"
+        },
+        "secrets": {
+          "$ref": "#/$defs/StepSecretSlice",
+          "description": "Secrets to inject that are necessary to retrieve the secrets.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-secrets-key"
+        },
+        "pull": {
+          "type": "string",
+          "enum": [
+            "always",
+            "not_present",
+            "on_start",
+            "never"
+          ],
+          "description": "Declaration to configure if and when the Docker image is pulled.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-pull-key",
+          "default": "not_present"
+        },
+        "ruleset": {
+          "$ref": "#/$defs/Ruleset",
+          "description": "Conditions to limit the execution of the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "id_request": {
+          "type": "string",
+          "description": "Request ID Request Token for the secret origin.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-id_request-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "image",
+        "name"
+      ]
+    },
+    "Parameter": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the parameter.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of the parameter.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Flag indicating if the parameter is required.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        },
+        "options": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "List of options for the parameter.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        },
+        "min": {
+          "type": "integer",
+          "description": "Minimum value for the parameter.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        },
+        "max": {
+          "type": "integer",
+          "description": "Maximum value for the parameter.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/#the-parameters-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ParameterMap": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Parameter"
+      },
+      "type": "object"
+    },
+    "Rules": {
+      "properties": {
+        "branch": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching build branches.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "comment": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching a pull request comment.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "event": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string",
+                "enum": [
+                  "comment",
+                  "comment:created",
+                  "comment:edited",
+                  "delete:branch",
+                  "delete:tag",
+                  "deployment",
+                  "pull_request",
+                  "pull_request*",
+                  "pull_request:edited",
+                  "pull_request:labeled",
+                  "pull_request:opened",
+                  "pull_request:reopened",
+                  "pull_request:synchronize",
+                  "pull_request:unlabeled",
+                  "push",
+                  "schedule",
+                  "tag"
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "comment",
+                "comment:created",
+                "comment:edited",
+                "delete:branch",
+                "delete:tag",
+                "deployment",
+                "pull_request",
+                "pull_request*",
+                "pull_request:edited",
+                "pull_request:labeled",
+                "pull_request:opened",
+                "pull_request:reopened",
+                "pull_request:synchronize",
+                "pull_request:unlabeled",
+                "push",
+                "schedule",
+                "tag"
+              ]
+            }
+          ],
+          "description": "Limits the execution of a step to matching build events.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "path": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching files changed in a repository.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "repo": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching repos.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "sender": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching build senders.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "status": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "failure"
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "success",
+                "failure"
+              ]
+            }
+          ],
+          "description": "Limits the execution of a step to matching build statuses.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "tag": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching build tag references.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits the execution of a step to matching build deployment targets.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "label": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits step execution to match on pull requests labels.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "instance": {
+          "oneOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "Limits step execution to match on certain instances.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "eval": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "The expression to evaluate the ruleset against.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "or",
+            "and"
+          ],
+          "description": "Whether all rule conditions must be met or just any one of them.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key",
+          "default": "and"
+        },
+        "matcher": {
+          "type": "string",
+          "enum": [
+            "filepath",
+            "regexp"
+          ],
+          "description": "Use the defined matching method.\nReference: coming soon",
+          "default": "filepath"
+        },
+        "continue": {
+          "type": "boolean",
+          "description": "Limits the execution of a step to continuing on any failure.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Ruleset": {
+      "anyOf": [
+        {
+          "properties": {
+            "if": {
+              "$ref": "#/$defs/Rules",
+              "description": "Limit execution to when all rules match.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "unless": {
+              "$ref": "#/$defs/Rules",
+              "description": "Limit execution to when all rules do not match.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "matcher": {
+              "type": "string",
+              "enum": [
+                "filepath",
+                "regexp"
+              ],
+              "description": "Use the defined matching method.\nReference: coming soon",
+              "default": "filepath"
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "or",
+                "and"
+              ],
+              "description": "Whether all rule conditions must be met or just any one of them.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key",
+              "default": "and"
+            },
+            "continue": {
+              "type": "boolean",
+              "description": "Limits the execution of a step to continuing on any failure.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key",
+              "default": false
+            }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        },
+        {
+          "properties": {
+            "branch": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching build branches.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "comment": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching a pull request comment.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "event": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "comment",
+                      "comment:created",
+                      "comment:edited",
+                      "delete:branch",
+                      "delete:tag",
+                      "deployment",
+                      "pull_request",
+                      "pull_request*",
+                      "pull_request:edited",
+                      "pull_request:labeled",
+                      "pull_request:opened",
+                      "pull_request:reopened",
+                      "pull_request:synchronize",
+                      "pull_request:unlabeled",
+                      "push",
+                      "schedule",
+                      "tag"
+                    ]
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "comment",
+                    "comment:created",
+                    "comment:edited",
+                    "delete:branch",
+                    "delete:tag",
+                    "deployment",
+                    "pull_request",
+                    "pull_request*",
+                    "pull_request:edited",
+                    "pull_request:labeled",
+                    "pull_request:opened",
+                    "pull_request:reopened",
+                    "pull_request:synchronize",
+                    "pull_request:unlabeled",
+                    "push",
+                    "schedule",
+                    "tag"
+                  ]
+                }
+              ],
+              "description": "Limits the execution of a step to matching build events.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "path": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching files changed in a repository.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "repo": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching repos.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "sender": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching build senders.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "status": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "success",
+                      "failure"
+                    ]
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "success",
+                    "failure"
+                  ]
+                }
+              ],
+              "description": "Limits the execution of a step to matching build statuses.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "tag": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching build tag references.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "target": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits the execution of a step to matching build deployment targets.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "label": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits step execution to match on pull requests labels.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "instance": {
+              "oneOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "Limits step execution to match on certain instances.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "eval": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "description": "The expression to evaluate the ruleset against.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "or",
+                "and"
+              ],
+              "description": "Whether all rule conditions must be met or just any one of them.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key",
+              "default": "and"
+            },
+            "matcher": {
+              "type": "string",
+              "enum": [
+                "filepath",
+                "regexp"
+              ],
+              "description": "Use the defined matching method.\nReference: coming soon",
+              "default": "filepath"
+            },
+            "continue": {
+              "type": "boolean",
+              "description": "Limits the execution of a step to continuing on any failure.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key",
+              "default": false
+            }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        }
+      ]
+    },
+    "Secret": {
+      "anyOf": [
+        {
+          "not": {
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name of secret to reference in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-name-key"
+              },
+              "key": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Path to secret to fetch from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-key-key"
+              },
+              "engine": {
+                "type": "string",
+                "enum": [
+                  "native",
+                  "vault"
+                ],
+                "description": "Name of storage backend to fetch secret from.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-engine-key",
+                "default": "native"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "repo",
+                  "org",
+                  "shared"
+                ],
+                "description": "Type of secret to fetch from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-type-key",
+                "default": "repo"
+              },
+              "origin": {
+                "$ref": "#/$defs/Origin",
+                "description": "Declaration to pull secrets from non-internal secret providers.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-origin-key"
+              },
+              "pull": {
+                "type": "string",
+                "enum": [
+                  "step_start",
+                  "build_start"
+                ],
+                "description": "When to pull in secrets from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-pull-key",
+                "default": "build_start"
+              }
+            },
+            "required": [
+              "origin"
+            ]
+          },
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Name of secret to reference in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-name-key"
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Path to secret to fetch from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-key-key"
+            },
+            "engine": {
+              "type": "string",
+              "enum": [
+                "native",
+                "vault"
+              ],
+              "description": "Name of storage backend to fetch secret from.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-engine-key",
+              "default": "native"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "repo",
+                "org",
+                "shared"
+              ],
+              "description": "Type of secret to fetch from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-type-key",
+              "default": "repo"
+            },
+            "origin": {
+              "$ref": "#/$defs/Origin",
+              "description": "Declaration to pull secrets from non-internal secret providers.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-origin-key"
+            },
+            "pull": {
+              "type": "string",
+              "enum": [
+                "step_start",
+                "build_start"
+              ],
+              "description": "When to pull in secrets from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-pull-key",
+              "default": "build_start"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Name of secret to reference in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-name-key"
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Path to secret to fetch from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-key-key"
+            },
+            "engine": {
+              "type": "string",
+              "enum": [
+                "native",
+                "vault"
+              ],
+              "description": "Name of storage backend to fetch secret from.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-engine-key",
+              "default": "native"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "repo",
+                "org",
+                "shared"
+              ],
+              "description": "Type of secret to fetch from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-type-key",
+              "default": "repo"
+            },
+            "origin": {
+              "$ref": "#/$defs/Origin",
+              "description": "Declaration to pull secrets from non-internal secret providers.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-origin-key"
+            },
+            "pull": {
+              "type": "string",
+              "enum": [
+                "step_start",
+                "build_start"
+              ],
+              "description": "When to pull in secrets from storage backend.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/#the-pull-key",
+              "default": "build_start"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "origin"
+          ]
+        }
+      ]
+    },
+    "SecretSlice": {
+      "items": {
+        "$ref": "#/$defs/Secret"
+      },
+      "type": "array"
+    },
+    "Service": {
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Docker image used to create ephemeral container.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-image-key"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the container in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-name-key"
+        },
+        "entrypoint": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "Commands to execute inside the container.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-entrypoint-key"
+        },
+        "environment": {
+          "$ref": "#/$defs/StringSliceMap",
+          "description": "Variables to inject into the container environment.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-environment-key"
+        },
+        "ports": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "List of ports to map for the container in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-ports-key"
+        },
+        "pull": {
+          "type": "string",
+          "enum": [
+            "always",
+            "not_present",
+            "on_start",
+            "never"
+          ],
+          "description": "Declaration to configure if and when the Docker image is pulled.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-pul-key",
+          "default": "not_present"
+        },
+        "ulimits": {
+          "$ref": "#/$defs/UlimitSlice",
+          "description": "Set the user limits for the container.\nReference: https://go-vela.github.io/docs/reference/yaml/services/#the-ulimits-key"
+        },
+        "user": {
+          "type": "string",
+          "description": "Set the user for the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-user-key"
+        },
+        "ruleset": {
+          "$ref": "#/$defs/Ruleset",
+          "description": "Conditions to limit the execution of the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "image",
+        "name"
+      ]
+    },
+    "ServiceSlice": {
+      "items": {
+        "$ref": "#/$defs/Service"
+      },
+      "type": "array"
+    },
+    "Stage": {
+      "properties": {
+        "environment": {
+          "$ref": "#/$defs/StringSliceMap",
+          "description": "Provide environment variables injected into the container environment.\nReference: https://go-vela.github.io/docs/reference/yaml/stages/#the-environment-key"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the stage in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/stages/#the-name-key"
+        },
+        "needs": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "Stages that must complete before starting the current one.\nReference: https://go-vela.github.io/docs/reference/yaml/stages/#the-needs-key"
+        },
+        "independent": {
+          "type": "boolean",
+          "description": "Stage will continue executing if other stage fails"
+        },
+        "steps": {
+          "$ref": "#/$defs/StepSlice",
+          "description": "Sequential execution instructions for the stage.\nReference: https://go-vela.github.io/docs/reference/yaml/stages/#the-steps-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "steps"
+      ]
+    },
+    "StageSlice": {
+      "patternProperties": {
+        ".*": {
+          "$ref": "#/$defs/Stage"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Step": {
+      "oneOf": [
+        {
+          "required": [
+            "template"
+          ],
+          "title": "template"
+        },
+        {
+          "required": [
+            "image"
+          ],
+          "title": "image"
+        }
+      ],
+      "properties": {
+        "ruleset": {
+          "$ref": "#/$defs/Ruleset",
+          "description": "Conditions to limit the execution of the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ruleset-key"
+        },
+        "commands": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "Execution instructions to run inside the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-commands-key"
+        },
+        "entrypoint": {
+          "$ref": "#/$defs/StringSlice",
+          "description": "Command to execute inside the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-entrypoint-key"
+        },
+        "secrets": {
+          "$ref": "#/$defs/StepSecretSlice",
+          "description": "Sensitive variables injected into the container environment.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-secrets-key"
+        },
+        "template": {
+          "$ref": "#/$defs/StepTemplate",
+          "description": "Name of template to expand in the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-template-key"
+        },
+        "ulimits": {
+          "$ref": "#/$defs/UlimitSlice",
+          "description": "Set the user limits for the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ulimits-key"
+        },
+        "volumes": {
+          "$ref": "#/$defs/VolumeSlice",
+          "description": "Mount volumes for the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-volume-key"
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Docker image to use to create the ephemeral container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-image-key"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique name for the step.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-name-key"
+        },
+        "pull": {
+          "type": "string",
+          "enum": [
+            "always",
+            "not_present",
+            "on_start",
+            "never"
+          ],
+          "description": "Declaration to configure if and when the Docker image is pulled.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-pull-key",
+          "default": "not_present"
+        },
+        "environment": {
+          "$ref": "#/$defs/StringSliceMap",
+          "description": "Provide environment variables injected into the container environment.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-environment-key"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Extra configuration variables for a plugin.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-parameters-key"
+        },
+        "detach": {
+          "type": "boolean",
+          "description": "Run the container in a detached (headless) state.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-detach-key"
+        },
+        "privileged": {
+          "type": "boolean",
+          "description": "Run the container with extra privileges.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-privileged-key"
+        },
+        "user": {
+          "type": "string",
+          "description": "Set the user for the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-user-key"
+        },
+        "report_as": {
+          "type": "string",
+          "description": "Set the name of the step to report as.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-report_as-key"
+        },
+        "id_request": {
+          "type": "string",
+          "description": "Request ID Request Token for the step.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-id_request-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "StepSecret": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "string"
+        },
+        {
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "source",
+            "target"
+          ]
+        }
+      ]
+    },
+    "StepSecretSlice": {
+      "items": {
+        "$ref": "#/$defs/StepSecret"
+      },
+      "type": "array"
+    },
+    "StepSlice": {
+      "items": {
+        "$ref": "#/$defs/Step"
+      },
+      "type": "array"
+    },
+    "StepTemplate": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the template.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-template-key"
+        },
+        "vars": {
+          "type": "object",
+          "description": "Variables injected into the template.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-template-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "StringSlice": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      ]
+    },
+    "StringSliceMap": {
+      "oneOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "Template": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the template.\nReference: https://go-vela.github.io/docs/reference/yaml/templates/#the-name-key"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to template in remote system.\nReference: https://go-vela.github.io/docs/reference/yaml/templates/#the-source-key"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "starlark",
+            "golang",
+            "go"
+          ],
+          "minLength": 1,
+          "description": "language used within the template file \nReference: https://go-vela.github.io/docs/reference/yaml/templates/#the-format-key",
+          "default": "go"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "github",
+            "file"
+          ],
+          "minLength": 1,
+          "description": "Type of template provided from the remote system.\nReference: https://go-vela.github.io/docs/reference/yaml/templates/#the-type-key",
+          "examples": [
+            "github"
+          ]
+        },
+        "vars": {
+          "type": "object",
+          "description": "Variables injected into the template.\nReference: https://go-vela.github.io/docs/reference/yaml/templates/#the-variables-key"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "source"
+      ]
+    },
+    "TemplateSlice": {
+      "items": {
+        "$ref": "#/$defs/Template"
+      },
+      "type": "array"
+    },
+    "Token": {
+      "properties": {
+        "repositories": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Provide a list of repositories to clone.\nReference: https://go-vela.github.io/docs/reference/yaml/git/#repositories"
+        },
+        "permissions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object",
+          "description": "Provide a list of repository permissions to apply to the git token.\nReference: https://go-vela.github.io/docs/reference/yaml/git/#permissions"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Ulimit": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "string",
+          "pattern": "[a-z]+=[0-9]+:[0-9]+"
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Unique name of the user limit.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ulimits-key"
+            },
+            "soft": {
+              "type": "integer",
+              "description": "Set the soft limit.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ulimits-key"
+            },
+            "hard": {
+              "type": "integer",
+              "description": "Set the hard limit.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-ulimits-key"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "UlimitSlice": {
+      "items": {
+        "$ref": "#/$defs/Ulimit"
+      },
+      "type": "array"
+    },
+    "Volume": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "type": "string",
+          "pattern": "[a-z\\/]+:[a-z\\/]+:[row]+"
+        },
+        {
+          "properties": {
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Set the source directory to be mounted.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-volume-key"
+            },
+            "destination": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Set the destination directory for the mount in the container.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-volume-key"
+            },
+            "access_mode": {
+              "type": "string",
+              "description": "Set the access mode for the mounted volume.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-volume-key",
+              "default": "ro"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "source",
+            "destination"
+          ]
+        }
+      ]
+    },
+    "VolumeSlice": {
+      "items": {
+        "$ref": "#/$defs/Volume"
+      },
+      "type": "array"
+    },
+    "Worker": {
+      "properties": {
+        "flavor": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Flavor identifier for worker.\nReference: https://go-vela.github.io/docs/reference/yaml/worker/#the-flavor-key",
+          "examples": [
+            "large"
+          ]
+        },
+        "platform": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Platform identifier for the worker.\nReference: https://go-vela.github.io/docs/reference/yaml/worker/#the-platform-key",
+          "examples": [
+            "kubernetes"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "stages"
+      ],
+      "title": "stages"
+    },
+    {
+      "required": [
+        "steps"
+      ],
+      "title": "steps"
+    }
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Provide syntax version used to evaluate the pipeline.\nReference: https://go-vela.github.io/docs/reference/yaml/version/"
+    },
+    "metadata": {
+      "$ref": "#/$defs/Metadata",
+      "description": "Pass extra information.\nReference: https://go-vela.github.io/docs/reference/yaml/metadata/"
+    },
+    "environment": {
+      "$ref": "#/$defs/StringSliceMap",
+      "description": "Provide global environment variables injected into the container environment.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/#the-environment-key"
+    },
+    "worker": {
+      "$ref": "#/$defs/Worker",
+      "description": "Limit the pipeline to certain types of workers.\nReference: https://go-vela.github.io/docs/reference/yaml/worker/"
+    },
+    "secrets": {
+      "$ref": "#/$defs/SecretSlice",
+      "description": "Provide sensitive information.\nReference: https://go-vela.github.io/docs/reference/yaml/secrets/"
+    },
+    "services": {
+      "$ref": "#/$defs/ServiceSlice",
+      "description": "Provide detached (headless) execution instructions.\nReference: https://go-vela.github.io/docs/reference/yaml/services/"
+    },
+    "stages": {
+      "$ref": "#/$defs/StageSlice",
+      "description": "Provide parallel execution instructions.\nReference: https://go-vela.github.io/docs/reference/yaml/stages/"
+    },
+    "steps": {
+      "$ref": "#/$defs/StepSlice",
+      "description": "Provide sequential execution instructions.\nReference: https://go-vela.github.io/docs/reference/yaml/steps/"
+    },
+    "templates": {
+      "$ref": "#/$defs/TemplateSlice",
+      "description": "Provide the name of templates to expand.\nReference: https://go-vela.github.io/docs/reference/yaml/templates/"
+    },
+    "deployment": {
+      "$ref": "#/$defs/Deployment",
+      "description": "Provide deployment configuration.\nReference: https://go-vela.github.io/docs/reference/yaml/deployments/"
+    },
+    "git": {
+      "$ref": "#/$defs/Git",
+      "description": "Provide the git access specifications.\nReference: https://go-vela.github.io/docs/reference/yaml/git/"
+    }
+  },
+  "type": "object",
+  "required": [
+    "version"
+  ],
+  "title": "Vela Pipeline Configuration"
+}

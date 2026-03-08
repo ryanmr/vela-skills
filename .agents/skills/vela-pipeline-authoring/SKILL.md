@@ -272,7 +272,7 @@ steps:
 
 ## JSON Schema
 
-A JSON Schema for `.vela.yml` is published with every Vela server release and available at https://github.com/go-vela/server/releases/latest/download/schema.json. It is also listed in [SchemaStore](https://www.schemastore.org), so editors with SchemaStore support validate `.vela.yml` files automatically.
+A JSON Schema for `.vela.yml` is published with every Vela server release and available at https://github.com/go-vela/server/releases/latest/download/schema.json. A local copy is stored at `references/schema.json` in this repository. It is also listed in [SchemaStore](https://www.schemastore.org), so editors with SchemaStore support validate `.vela.yml` files automatically.
 
 ## Pitfalls
 
